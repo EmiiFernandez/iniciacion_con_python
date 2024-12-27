@@ -14,6 +14,23 @@ def inicializar_db():
             categoria TEXT NOT NULL
         )
     ''')
+
+    cursor.execute("SELECT COUNT(*) FROM productos")
+    cantidad_productos = cursor.fetchone()[0]
+
+    if cantidad_productos == 0:
+        productos_iniciales = [
+            ("Manzana", "Fruta", 50, 10.20, "Frutas"),
+            ("Pan", "Pan Casero", 20, 50.0, "Panadería")
+        ]
+
+        # Insertar los productos en la tabla
+        # executemany --insertar varios registros al mismo tiempo
+        cursor.executemany('''
+            INSERT INTO productos (nombre, descripcion, stock, precio, categoria)
+            VALUES (?, ?, ?, ?, ?)
+        ''', productos_iniciales)
+    
     conexion.commit()
     conexion.close()
 
