@@ -12,6 +12,7 @@ TIP: Si el código que se ingresa no está registrado, podemos avisar que no se 
 '''
 
 def buscar_producto_por_nombre():
+    print(estilos.estilo_titulo + "\n[BUSCAR PRODUCTO POR NOMBRE]")
     nombre = input("Ingrese el nombre del producto a buscar: ").capitalize()
     
     try:
