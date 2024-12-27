@@ -11,8 +11,6 @@ El código de esta función debe recorrer todo el inventario y mostrar la inform
 Ten en cuenta que si el inventario está vacío, la función debería informar que aún no han ingresado productos
 '''
 
-from inventario_diccionario import inventario
-
 def mostrar_productos():
     print(estilos.estilo_titulo + "\n[MOSTRAR PRODUCTOS]")
 
