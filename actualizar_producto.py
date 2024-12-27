@@ -1,3 +1,7 @@
+import estilos
+from inventario_db import conexion_db
+from mostrar_productos import mostrar_productos
+
 '''
 Actualización de productos
 
@@ -8,78 +12,84 @@ Esta función debería solicitar que se ingrese el código del producto a actual
 Por supuesto, ¡puedes agregar todas las funcionalidades extra que consideres necesario!
 '''
 
-from inventario_diccionario import inventario
-from mostrar_productos import mostrar_productos
-
 def actualizar_producto():
-    print("Los productos en el inventario son: ")
+    print(estilos.estilo_titulo + "\n[ACTUALIZAR PRODUCTO]")
+
+    print(estilos.estilo_aviso + "\nLos productos en el inventario son: ")
     mostrar_productos()
-    codigo_producto = 0
-    
-    while codigo_producto <= 0:
+
+    id = 0
+
+    while id <= 0:
         try:
-            codigo_producto = int(input("Ingrese la código del producto a modificar/actualizar: "))
+            id = int(input("Ingrese el código del producto a modificar/actualizar: "))
 
-            producto = inventario.get(codigo_producto , "No encontrado")
+            # Verificar si el producto existe en la base de datos
+            conexion = conexion_db()
+            cursor = conexion.cursor()
+            cursor.execute("SELECT * FROM productos WHERE id = ?", (id,))
+            producto = cursor.fetchone()
 
-            if producto == "No encontrado":
-                print(f"El código {codigo_producto} no existe en el inventario")
-                codigo_producto = 0 
-            else:
-                print("\nProducto encontrado:")
-                print(f"{codigo_producto:<10}{producto['nombre']:<20}{producto['descripcion']:<20}{producto['cantidad']:<5}{producto['precio']:<5}{producto['categoria']:<10}")
- 
-                print("\nPresione ENTER para mantener el valor actual")
-                
-                nombre = input(f"Nombre actual: {producto['nombre']}\nNuevo nombre: ").capitalize()
-                nombre = nombre if nombre != "" else producto['nombre']
-                
-                descripcion = input(f"Descripción actual: {producto['descripcion']}\nNueva descripción: ").capitalize()
-                descripcion = descripcion if descripcion != "" else producto['descripcion']
-                
-                categoria = input(f"Categoría actual: {producto['categoria']}\nNueva categoría: ").capitalize()
-                categoria = categoria if categoria != "" else producto['categoria']
-                
-                cantidad = producto['cantidad']   
-                while True:
-                    try:
-                        cant_input = input(f"Cantidad actual: {producto['cantidad']}\nNueva cantidad (ENTER para mantener): ")
-                        if cant_input == "":  
-                            break
-                        cantidad = int(cant_input)
-                        if cantidad <= 0:
-                            print("Ingrese un número mayor que 0")
-                            continue
+            if not producto:
+                print(estilos.estilo_alerta + f"El código {id} no existe en la base de datos.")
+                conexion.close()
+                id = 0
+                continue
+
+            print(estilos.estilo_exito + "\nProducto encontrado:")
+            print(f"ID: {producto[0]}, Nombre: {producto[1]}, Descripción: {producto[2]}, Stock: {producto[3]}, Precio: {producto[4]}, Categoría: {producto[5]}")
+
+            print(estilos.estilo_aviso + "\nPresione ENTER para mantener el valor actual")
+
+            # Pedir datos al usuario, dejando la posibilidad de mantener los valores actuales
+            nombre = input(f"Nombre actual ({producto[1]}): ").capitalize() or producto[1]
+            descripcion = input(f"Descripción actual ({producto[2]}): ").capitalize() or producto[2]
+            categoria = input(f"Categoría actual ({producto[5]}): ").capitalize() or producto[5]
+
+            # Validar cantidad
+            stock = producto[3]
+            while True:
+                try:
+                    stock_input = input(f"Stock actual ({producto[3]}): ")
+                    if stock_input == "":
                         break
-                    except ValueError:
-                        print("Ingrese un número válido")
+                    stock = int(stock_input)
+                    if stock <= 0:
+                        print(estilos.estilo_alerta + "Ingrese un número mayor que 0.")
+                        continue
+                    break
+                except ValueError:
+                    print(estilos.estilo_alerta + "Ingrese un número válido.")
 
-                precio = producto['precio'] 
-                while True:
-                    try:
-                        precio_input = input(f"Precio actual: {producto['precio']}\nNuevo precio (ENTER para mantener): ")
-                        if precio_input == "":   
-                            break
-                        precio = float(precio_input)
-                        if precio <= 0:
-                            print("Ingrese un número mayor que 0")
-                            continue
+            # Validar precio
+            precio = producto[4]
+            while True:
+                try:
+                    precio_input = input(f"Precio actual ({producto[4]}): ")
+                    if precio_input == "":
                         break
-                    except ValueError:
-                        print("Ingrese un número válido")
+                    precio = float(precio_input)
+                    if precio <= 0:
+                        print(estilos.estilo_alerta + "Ingrese un número mayor que 0.")
+                        continue
+                    break
+                except ValueError:
+                    print(estilos.estilo_alerta + "Ingrese un número válido.")
 
-                inventario[codigo_producto] = {
-                    "nombre": nombre,
-                    "descripcion": descripcion,
-                    "cantidad": cantidad,
-                    "precio": precio,
-                    "categoria": categoria
-                }
+            # Actualizar en la base de datos
+            cursor.execute(
+                '''UPDATE productos SET nombre = ?, descripcion = ?, stock = ?, precio = ?, categoria = ? WHERE id = ?''',
+                (nombre, descripcion, stock, precio, categoria, id)
+            )
+            conexion.commit()
+            conexion.close()
 
+            print(estilos.estilo_exito + f"\nProducto actualizado con éxito:\n")
+            
+            print(estilos.estilo_titulo + f"{'ID':<5} {'Nombre':<20} {'Descripción':<30} {'Stock':<10} {'Precio':<10} {'Categoría':<15}")
+            print("-" * 90)
+            print(f"{id:<5} {nombre:<20} {descripcion:<30} {stock:<10} {precio:<10.2f} {categoria:<15}")
 
-                print("Producto agregado exitosamente:\n", inventario[codigo_producto])
-    
         except ValueError:
-                print("Ingrese un número")
-                codigo_producto = 0
-
+            print(estilos.estilo_alerta + "Ingrese un número válido.")
+            id = 0
