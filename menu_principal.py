@@ -1,6 +1,6 @@
 import estilos
 from registrar_producto import registrar_producto 
-from buscar_producto import buscar_producto_por_codigo 
+from buscar_producto import buscar_producto_por_nombre 
 from actualizar_producto import actualizar_producto 
 from eliminar_producto import eliminar_producto 
 from mostrar_productos import mostrar_productos 
@@ -16,7 +16,9 @@ Por ejemplo, nuestro menú principal podría mostrar las distintas acciones disp
 TIP: ¡ El menú principal también puede ser una función!
 '''
 def menu_principal() :
-    while True:
+    menu = True
+
+    while menu:
 
         print(estilos.estilo_menu + "\n[MENU PRINCIPAL]")
         print("\nMenú de Gestión de Productos\n")
@@ -35,20 +37,21 @@ def menu_principal() :
         if opcion == 1:
             registrar_producto()
         elif opcion == 2:
-            buscar_producto_por_codigo()
+             mostrar_productos()
         elif opcion == 3:
             actualizar_producto()
         elif opcion == 4:
             eliminar_producto()
         elif opcion == 5:
-            mostrar_productos()
-        elif opcion == 6:
             reporte_bajo_stock()
+        elif opcion == 6:
+            buscar_producto_por_nombre()
         elif opcion == 7:
-            print(Fore.GREEN + "Saliendo del programa..." + Style.RESET_ALL)
+            menu = False
+            print(estilos.estilo_aviso + "Saliendo del programa...")
             break
         else:
-            print(Fore.RED + "Opción no válida." + Style.RESET_ALL)
+            print(estilos.estilo_alerta + "Opción no válida.")
 
 
 

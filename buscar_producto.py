@@ -8,5 +8,5 @@ Podés crear una función más especializada (a la que llamamos buscar_producto(
 TIP: Si el código que se ingresa no está registrado, podemos avisar que no se encontró el producto.
 '''
 
-def buscar_producto_por_codigo():
+def buscar_producto_por_nombre():
     ""
