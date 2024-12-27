@@ -1,3 +1,6 @@
+import estilos
+from inventario_db import conexion_db
+
 '''
 Registro de productos
 
@@ -7,50 +10,59 @@ Usaremos una variable que actúe como un contador para los códigos de los produ
 El diccionario inventario usará el código del producto como clave, mientras que los valores asociados a esa clave serán otro diccionario que contendrá toda la información del producto.
 '''
 
-from inventario_diccionario import inventario
+#Verifica si un producto con el mismo nombre ya existe en la base de datos.
+def verificar_producto_existente(nombre):
+    conexion = conexion_db()
+    cursor = conexion.cursor()
+    cursor.execute("SELECT COUNT(*) FROM productos WHERE nombre = ?", (nombre,))
+    existe = cursor.fetchone()[0] > 0
+    conexion.close()
+    return existe
 
+# Valida que la cantidad de stock sea mayor que 0.
+def validar_stock(cantidad):
+    if cantidad <= 0:
+        raise ValueError("La cantidad en stock debe ser un número positivo mayor a 0.")
+
+# Valida que el precio sea mayor que 0.
+def validar_precio(precio):
+    if precio <= 0:
+        raise ValueError("El precio debe ser un número positivo mayor a 0.")
+    
+# Registra un producto en la base de datos si no existe y valida los datos ingresados.
 def registrar_producto():
-    codigo_producto = len(inventario) + 1
+    print(estilos.estilo_titulo + "\n[REGISTRO DE PRODUCTO]")
+
     nombre = input("Ingrese el nombre del producto: ").capitalize()
     descripcion = input("Ingrese la descripción del producto: ").capitalize()
     categoria = input("Ingrese la categoría del producto: ").capitalize()
-    cantidad = 0
-    precio = 0
-
-    while cantidad <= 0:
+  # Validación de stock y precio
+    while True:
         try:
-            cantidad = int(input("Ingrese la cantidad del stock: "))
-            if cantidad <= 0:
-                print ("Ingrese un número mayor que 0")
-        except:
-            print("Ingrese un número mayor a 0")
-            cantidad = 0
+            stock = int(input("Ingrese la cantidad en stock: "))
+            validar_stock(stock)
+            break  # Si pasa la validación, salimos del bucle
+        except ValueError as e:
+            print(estilos.estilo_alerta + str(e))
 
-        while precio <= 0:
-            try:
-                precio = float(input("Ingrese el precio del producto: "))
-                if precio <= 0:
-                    print ("Ingrese un número mayor que 0")
-            except:
-                print("Ingrese un número mayor a 0")
-                precio = 0
-    
-    '''Agregar al inventario'''
+    while True:
+        try:
+            precio = float(input("Ingrese el precio del producto: "))
+            validar_precio(precio)
+            break  # Si pasa la validación, salimos del bucle
+        except ValueError as e:
+            print(estilos.estilo_alerta + str(e))
 
-    inventario[codigo_producto] = {
-        "nombre" : nombre,
-        "descripcion" : descripcion,
-        "cantidad" : cantidad,
-        "precio" : precio,
-        "categoria" : categoria
-    }
+    # Verificar si el producto ya existe
+    if verificar_producto_existente(nombre):
+        print(estilos.estilo_alerta + f"El producto '{nombre}' ya existe en la base de datos.")
+        return
 
-    print("Producto agregado correctamente:\n", inventario[codigo_producto])
-    
-registrar_producto()
+    datos = [nombre, descripcion, stock, precio, categoria]
+    conexion = conexion_db()
+    cursor = conexion.cursor()
 
-'''
-Separar en funcione el precio y la cantidad
-
-Verificar si el producto existe
-'''
+    cursor.execute("INSERT INTO productos (nombre, descripcion, stock, precio, categoria) VALUES (?, ?, ?, ?, ?)", datos)
+    conexion.commit()
+    print(estilos.estilo_exito + f"Producto '{nombre}' agregado con éxito.")
+    conexion.close()

@@ -7,3 +7,6 @@ eliminar_producto() debe pedir el código del producto a borrar, buscarlo en el 
 
 TIP: Es posible que puedas utilizar en esta función un algoritmo similar el que usaste en actualizar_producto()
 '''
+
+def eliminar_producto():
+    ""

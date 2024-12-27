@@ -7,3 +7,5 @@ Finalmente, debería mostrar todos esos productos en pantalla.
 
 TIP: Validá la entrada del usuario o usuaria, para evitar que se ingresen valores negativos o que no sean coherentes con la lógica de tu programa.
 '''
+def reporte_bajo_stock():
+    ""

@@ -1,12 +1,12 @@
-from registrar_producto import registrar_producto
-from mostrar_productos import mostrar_producto
+from inventario_db import inicializar_db
+from menu_principal import menu_principal
+
+
 
 def main():
-    try:
-        registrar_producto()
-        mostrar_producto()
-    except Exception as e:
-        print(f"Error: {str(e)}")
+        
+        inicializar_db()
+        menu_principal()
 
 if __name__ == "__main__":
     main()

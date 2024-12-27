@@ -83,4 +83,3 @@ def actualizar_producto():
                 print("Ingrese un número")
                 codigo_producto = 0
 
-actualizar_producto()   
