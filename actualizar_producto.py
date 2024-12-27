@@ -91,5 +91,5 @@ def actualizar_producto():
             print(f"{id:<5} {nombre:<20} {descripcion:<30} {stock:<10} {precio:<10.2f} {categoria:<15}")
 
         except ValueError:
-            print(estilos.estilo_alerta + "Ingrese un número válido.")
+            print(estilos.estilo_alerta + "Ingrese un código válido.")
             id = 0
