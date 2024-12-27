@@ -22,12 +22,12 @@ def menu_principal() :
 
         print(estilos.estilo_menu + "\n[MENU PRINCIPAL]")
         print("\nMenú de Gestión de Productos\n")
-        print("1. Alta de productos nuevos")
-        print("2. Listado completo de los productos")
-        print("3. Modificar producto")
+        print("1. Registro de productos")
+        print("2. Consulta de productos")
+        print("3. Actualizar producto")
         print("4. Eliminar producto")
-        print("5. Reporte de bajo stock")
-        print("6. Buscar producto por nombre")
+        print("5. Buscar producto por nombre")
+        print("6. Reporte de bajo stock")
         print("7. Salir\n")
 
         # Ingresar por teclado una opción
@@ -43,9 +43,9 @@ def menu_principal() :
         elif opcion == 4:
             eliminar_producto()
         elif opcion == 5:
-            reporte_bajo_stock()
-        elif opcion == 6:
             buscar_producto_por_nombre()
+        elif opcion == 6:
+            reporte_bajo_stock()
         elif opcion == 7:
             menu = False
             print(estilos.estilo_aviso + "Saliendo del programa...")
