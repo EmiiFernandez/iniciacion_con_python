@@ -1,6 +1,5 @@
 import estilos
 from inventario_db import conexion_db
-from mostrar_productos import mostrar_productos
 
 '''
 Reporte de stock bajo
@@ -12,6 +11,7 @@ Finalmente, debería mostrar todos esos productos en pantalla.
 TIP: Validá la entrada del usuario o usuaria, para evitar que se ingresen valores negativos o que no sean coherentes con la lógica de tu programa.
 '''
 def reporte_bajo_stock():
+    print(estilos.estilo_titulo + "\n[REPORTE BAJO STOCK]")
     valor_bajo = 0
 
     while valor_bajo <= 0:
@@ -42,7 +42,6 @@ def reporte_bajo_stock():
         else:
             print(estilos.estilo_exito + "No hay productos con bajo stock.")
     except Exception as e:
-        # Manejar excepciones si algo sale mal
         print(estilos.estilo_alerta + f"Error al obtener los productos: {e}")
     finally:
         conexion.close()
